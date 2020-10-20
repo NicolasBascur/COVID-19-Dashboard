@@ -2,7 +2,7 @@
 
 Integrantes:
 
-Nicolas Bascur
-Matias Vargas
-Javier Araneda
-Joaquin Quezada
+Nicolas Bascur,
+Matias Vargas,
+Javier Araneda,
+Joaquin Quezada.
