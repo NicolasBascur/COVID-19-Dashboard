@@ -1,27 +1,40 @@
 import os
 import pprint
 import pandas as pd
-import SessionState #Libreria que permite paginacion
+import SessionState
+from leer_data import datosRegionTotales #Libreria que permite paginacion
 from  sir import plt
 import datetime
 import streamlit as st
 import covsirphy as cs
 import SessionState
 import texto
+import leer_data
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-data_loader = cs.DataLoader("csv_listo")
+
+
+#Se crea csv principal donde se realizara la prediccion
+#data_loader = cs.DataLoader("csv_listo")
 csvregion = pd.read_csv("csv_listo/covid19dh.csv")
 CHL = csvregion.loc[csvregion["ISO3"]=='CHL']
 CHL.to_csv('./csv_listo/region.csv') 
 
-#jhu_data = data_loader.jhu(verbose=True)
-# Population in each country
-#population_data = data_loader.population(verbose=True)
-# Government Response Tracker (OxCGRT)
-#oxcgrt_data = data_loader.oxcgrt(verbose=True)
+#CSV para mostrar diferentes metricas
 
+totales_csv = '.\\datos_ordernar\\regiones\\TotalesPorRegion.csv'
+
+
+
+
+#
+##jhu_data = data_loader.jhu(verbose=True)
+# Population in each country
+##population_data = data_loader.population(verbose=True)
+# Government Response Tracker (OxCGRT)
+##oxcgrt_data = data_loader.oxcgrt(verbose=True)
+#
 
 
 
@@ -44,19 +57,36 @@ if radio == "Region":
     valor_reg=st.sidebar.selectbox('Seleccione region:',
                         ("Arica y Parinacota","Tarapacá","Antofagasta","Atacama","Coquimbo","Valparaíso","Metropolitana","O’Higgins","Maule","Ñuble","Biobío","Araucanía","Los Ríos","Los Lagos","Aysén","Magallanes")
                         )
-    #Valor de fecha inicial
-    
+
     valor_fechai = st.sidebar.date_input("Fecha Inicial", datetime.date(2020, 11, 6))
     tabla_muestra= table_reg.loc[(table_reg['Region'] == valor_reg)]
-    ##jhu_data.subset("Chile", province=valor_reg).tail()
-    ##total_df = jhu_data.total()
-    ##total_df.tail()
 
+    opcion_mat_reg = st.selectbox(
+                            'Metrica a observar: ',
+                         ('Totales', 'Acumulativo', 'Fallecidos'))
 
+    if opcion_mat_reg == "Totales":
+        regtotal = datosRegionTotales(totales_csv, valor_reg)
+        regtotal = regtotal.drop('Region',axis=1)
+        regtotal = regtotal.transpose()
+        regtotal = regtotal.drop(['Categoria'])
+        regtotal = regtotal.rename(columns={0: 'Casos acumulados'
+                                            , 17:'Casos nuevos totales'
+                                            , 34:'Casos nuevos con sintomas'
+                                            , 51:'Casos nuevos sin sintomas'
+                                            , 68:'Casos nuevos sin notificar'
+                                            , 85:'Fallecidos totales'
+                                            , 102:'Casos confirmados recuperados'
+                                            , 119:'Casos activos confirmados'
+                                            , 136:'Casos activos probables'
+                                            , 153:'Casos probables acumulados'})
+        #st.write(regtotal)
+        st.line_chart(data=regtotal.reset_index(drop=True), use_container_width=True)
 
-    st.write('Datos de la region '+ valor_reg +'', tabla_muestra[['Fecha', 'Poblacion','Confirmados','Recuperados','Muertes']], 'Above is a dataframe.')
+    st.write('Datos procesados de la region '+ valor_reg +'', tabla_muestra[['Fecha', 'Confirmados','Recuperados','Muertes']])
     ##st.pyplot(cs.line_plot(total_df[["Infected", "Fatal", "Recovered"]], "Total number of cases over time"))
 
+    
 
     #st.write("vertical")
     # st.write(pd.DataFrame(

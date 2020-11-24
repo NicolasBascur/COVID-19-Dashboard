@@ -33,12 +33,11 @@ def datosRegionCumulativo(archivo,region): #directorio archivo , Nombre de regio
             tcasos[1].append(int(float(datos[region])))
     return tcasos
 
-def datosRegionTotales(archivo,region='all'):
-    with open(archivo,'r',encoding='utf-8') as cvs:
-        diccionario = csv.DictReader(cvs)
-        for datos in diccionario:
-            if(datos['Region']==region):
-                return(datos)
+def datosRegionTotales(archivo, region):
+    data = pd.read_csv(archivo)
+    data = data.loc[data['Region'] == region]
+    #data = (data[data.columns[5:-1]]).T
+    return data
             
 
 def casosRegionesTotales(archivo):
