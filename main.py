@@ -16,11 +16,11 @@ csvregion = pd.read_csv("csv_listo/covid19dh.csv")
 CHL = csvregion.loc[csvregion["ISO3"]=='CHL']
 CHL.to_csv('./csv_listo/region.csv') 
 
-jhu_data = data_loader.jhu(verbose=True)
+#jhu_data = data_loader.jhu(verbose=True)
 # Population in each country
-population_data = data_loader.population(verbose=True)
+#population_data = data_loader.population(verbose=True)
 # Government Response Tracker (OxCGRT)
-oxcgrt_data = data_loader.oxcgrt(verbose=True)
+#oxcgrt_data = data_loader.oxcgrt(verbose=True)
 
 
 
@@ -48,31 +48,31 @@ if radio == "Region":
     
     valor_fechai = st.sidebar.date_input("Fecha Inicial", datetime.date(2020, 11, 6))
     tabla_muestra= table_reg.loc[(table_reg['Region'] == valor_reg)]
-    jhu_data.subset("Chile", province=valor_reg).tail()
-    total_df = jhu_data.total()
-    total_df.tail()
+    ##jhu_data.subset("Chile", province=valor_reg).tail()
+    ##total_df = jhu_data.total()
+    ##total_df.tail()
 
 
 
     st.write('Datos de la region '+ valor_reg +'', tabla_muestra[['Fecha', 'Poblacion','Confirmados','Recuperados','Muertes']], 'Above is a dataframe.')
-    st.pyplot(cs.line_plot(total_df[["Infected", "Fatal", "Recovered"]], "Total number of cases over time"))
+    ##st.pyplot(cs.line_plot(total_df[["Infected", "Fatal", "Recovered"]], "Total number of cases over time"))
 
 
-    st.write("vertical")
-    st.write(pd.DataFrame(
-        [mRegion[1]],
-        columns=mRegion[0]
-    ))
+    #st.write("vertical")
+    # st.write(pd.DataFrame(
+    #    [mRegion[1]],
+    #    columns=mRegion[0]
+    #))
+    #
+    #"Grafica"
+    #
+    #grafica= pd.DataFrame(mRegion[1],mRegion[0])
+    #st.line_chart(grafica)
 
-    "Grafica"
+    #"Casos Totales Region"
 
-    grafica= pd.DataFrame(mRegion[1],mRegion[0])
-    st.line_chart(grafica)
-
-    "Casos Totales Region"
-
-    print(ctRegion)
-    st.write(pd.DataFrame.from_records(ctRegion,index=[0]))
+    #print(ctRegion)
+    #st.write(pd.DataFrame.from_records(ctRegion,index=[0]))
 
 
     "Sir"
