@@ -22,12 +22,15 @@ CHL = csvregion.loc[csvregion["ISO3"]=='CHL']
 CHL.to_csv('./csv_listo/region.csv') 
 
 #CSV para mostrar diferentes metricas
-
+#CSV REGIONES
 totales_csv = '.\\datos_ordernar\\regiones\\TotalesPorRegion.csv'
 fallecidos_csv = '.\\datos_ordernar\\regiones\\FallecidosCumulativo.csv'
 reg_acumulativo_csv = '.\\datos_ordernar\\regiones\\CasosNuevosCumulativo.csv'
-
-
+#CSV COMUNAS
+total_com = '.\\datos_ordernar\\comunas\\Covid-19.csv'
+activos_com = '.\\datos_ordernar\\comunas\\CasosActivosPorComuna.csv'
+confirmados_com = '.\\datos_ordernar\\comunas\\CasosConfirmadosPorComuna.csv'
+fallecidos_com = '.\\datos_ordernar\\comunas\\CasosFallecidosPorComuna.csv'
 #
 ##jhu_data = data_loader.jhu(verbose=True)
 # Population in each country
@@ -58,18 +61,14 @@ if radio == "Region":
     valor_fechai = st.sidebar.date_input("Fecha Inicial", datetime.date(2020, 3, 22))
     valor_fechai = st.sidebar.date_input("Fecha Final", datetime.date(2020, 11, 6))
     tabla_muestra= table_reg.loc[(table_reg['Region'] == valor_reg)]
-
-    opcion_mat_reg = st.selectbox(
-                            'Metrica a observar: ',
-                         ('Totales', 'CasosNuevosAcumulativos', 'Fallecidos'))
-
+    opcion_mat_reg = st.selectbox('Metrica a observar: ', ld.metricasreg)
     if opcion_mat_reg == "Totales":
         regtotal = ld.datosRegionTotales(totales_csv, valor_reg)
         regtotal = ld.datosRegionTotales_grafico(regtotal)
         #st.write(regtotal)
         st.line_chart(data=regtotal.reset_index(drop=True), use_container_width=True)
 
-    if opcion_mat_reg == "CasosNuevosAcumulativos":
+    if opcion_mat_reg == "Casos Nuevos Acumulativos":
         regtotal = ld.datosRegionAcumulativos(reg_acumulativo_csv, valor_reg)
         #st.write(regtotal)
         st.line_chart(data=regtotal.reset_index(drop=True), use_container_width=True)
@@ -89,4 +88,27 @@ if radio == "Region":
 
 #MATRICES COMUNAS --------------------------------------------------------------------------------------------------------------
 elif radio == "Comuna":
+    st.markdown("Datos ")
     valor_com=st.sidebar.selectbox('Seleccione region:',ld.comunas)
+    valor_fechai = st.sidebar.date_input("Fecha Inicial", datetime.date(2020, 3, 22))
+    valor_fechai = st.sidebar.date_input("Fecha Final", datetime.date(2020, 11, 6))
+    opcion_mat_com = st.selectbox('Metrica a observar: ', ld.metricascom)
+    if opcion_mat_com == "Total contagiados":
+        comval, pob = ld.datosComunasTotales(total_com, valor_com)
+        st.write('La poblacion total de '+ str(valor_com) +' es de: ' + str(pob)+'.   Intervalos de dos dias/Personas')
+        st.line_chart(data=comval.reset_index(drop=True), use_container_width=True)
+
+    if opcion_mat_com == "Casos activos":
+        comval, pob = ld.datosComunasActivos(activos_com, valor_com)
+        st.write('La poblacion total de '+ str(valor_com) +' es de: ' + str(pob)+'.     Intervalos de dos a tres dias/Personas')
+        st.line_chart(data=comval.reset_index(drop=True), use_container_width=True)
+
+    if opcion_mat_com == "Casos confirmados":
+        comval, pob = ld.datosComunasConfirmados(confirmados_com, valor_com)
+        st.write('La poblacion total de '+ str(valor_com) +' es de: ' + str(pob)+'.     Intervalos de dos a cinco dias/Personas')
+        st.line_chart(data=comval.reset_index(drop=True), use_container_width=True)
+
+    if opcion_mat_com == "Fallecidos":
+        comval, pob = ld.datosComunasFallecidos(fallecidos_com, valor_com)
+        st.write('La poblacion total de '+ str(valor_com) +' es de: ' + str(pob)+'.     Intervalos de dos a cinco dias/Personas')
+        st.line_chart(data=comval.reset_index(drop=True), use_container_width=True)
