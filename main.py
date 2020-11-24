@@ -66,16 +66,19 @@ if radio == "Region":
         regtotal = ld.datosRegionTotales(totales_csv, valor_reg)
         regtotal = ld.datosRegionTotales_grafico(regtotal)
         #st.write(regtotal)
+        st.write('Dias/Personas')
         st.line_chart(data=regtotal.reset_index(drop=True), use_container_width=True)
 
     if opcion_mat_reg == "Casos Nuevos Acumulativos":
         regtotal = ld.datosRegionAcumulativos(reg_acumulativo_csv, valor_reg)
         #st.write(regtotal)
+        st.write('Dias/Personas')
         st.line_chart(data=regtotal.reset_index(drop=True), use_container_width=True)
 
     if opcion_mat_reg == "Fallecidos":
         regtotal = ld.datosRegionFallecidos(fallecidos_csv, valor_reg)
         #st.write(regtotal)
+        st.write('Dias/Personas')
         st.line_chart(data=regtotal.reset_index(drop=True), use_container_width=True)
 
     st.write('Datos procesados de la region '+ valor_reg +'', tabla_muestra[['Fecha', 'Confirmados','Recuperados','Muertes']])
