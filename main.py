@@ -2,7 +2,7 @@ import os
 import pprint
 import pandas as pd
 import SessionState #Libreria que permite paginacion
-# from  sir import plt
+from  sir import plt
 import datetime
 import streamlit as st
 import covsirphy as cs
