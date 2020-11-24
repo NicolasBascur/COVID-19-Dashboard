@@ -16,7 +16,8 @@ PARAMETER_SELECTION='''
 
 MODEL_INTRO='''
 ### Predicción Infectados
-El siguiente gráfico muestra el resultado de la simulación de la evolución de pacientes expuestos e infectados para los parámetros seleccionados.
+El siguiente gráfico muestra el resultado de la simulación de la evolución de pacientes expuestos e infectados para los parámetros seleccionados. 
+La fecha inicial desde comienzo de recompilacion de datos del contagio es 2020-03-22
 '''
 
 SIMULATION_CONFIG = '''

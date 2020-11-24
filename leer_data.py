@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-
-import csv
 import pandas as pd
-import itertools
-from pathlib import Path
 #Lista con todas las regiones
 regiones = ["Arica y Parinacota","Tarapacá","Antofagasta","Atacama","Coquimbo","Valparaíso","Metropolitana","O’Higgins","Maule","Ñuble","Biobío","Araucanía","Los Ríos","Los Lagos","Aysén","Magallanes"]
 #Lista de comunas
@@ -15,49 +11,43 @@ comunas=["Arica","Camarones","General Lagos","Putre","Desconocido Arica y Parina
 #MATRICES REGION
 
 
-#total casos diarios Region
-#tcdR =  "datos/TotalesPorRegion.csv"
-#casosTotalesCumulativosRegion
-#ctcRegion = "datos/CasosTotalesCumulativo_T.csv"
-#
-# Implementar panda para cargar los archivos csv
-#
-def datosRegionCumulativo(archivo,region): #directorio archivo , Nombre de region a buscar.
-    tcasos= [[],[]] # es una lista con 2 arreglos. [Nombre Region][Cantidad de casos] en retroespectiva, podria haberlos hecho pareja
-    with open(archivo,'r',encoding='utf-8') as cvs:# Abrimos el archivo 
-        diccionario = csv.DictReader(cvs) #cargamos el archivo csv como un diccionario
-        # headers=diccionario.fieldnames
-        #print(region)
-        for datos in diccionario: # Actualmente solo necesitaba el nombre de la region y el numero de casos
-            tcasos[0].append(datos['Region'])
-            tcasos[1].append(int(float(datos[region])))
-    return tcasos
-
 def datosRegionTotales(archivo, region):
     data = pd.read_csv(archivo)
     data = data.loc[data['Region'] == region]
     #data = (data[data.columns[5:-1]]).T
     return data
-            
 
-def casosRegionesTotales(archivo):
-    totalRegiones=[[],[]]
-    with open(archivo,'r',encoding='utf-8') as cvs:
-        diccionario = csv.DictReader(cvs)
-        for datos in diccionario:
-            totalRegiones[0].append(datos['Region'])
-            totalRegiones[1].append(int(datos['Casos totales acumulados']))
-            #totalRegiones.append(datos)#devuelve el diccionario con todas las regiones
-    return totalRegiones 
-            
-    
+def datosRegionAcumulativos(archivo, region):
+    data = pd.read_csv(archivo)
+    data = data.loc[data['Region'] == region]
+    data = data.transpose()
+    data = data.rename(columns={0: 'Casos nuevos'})
+    return data
 
-def leerRegionDiario():
-    #LEEER TODOS LOS archivos de la carpeta
-    return 
+def datosRegionFallecidos(archivo, region):
+    data = pd.read_csv(archivo)
+    data = data.loc[data['Region'] == region]
+    data = data.transpose()
+    data = data.rename(columns={0: 'Fallecidos'})
+    return data
 
-def leerOtrosDatosRegion():
-    return
+def datosRegionTotales_grafico(regtotal):
+    regtotal = regtotal.drop('Region',axis=1)
+    regtotal = regtotal.transpose()
+    regtotal = regtotal.drop(['Categoria'])
+    regtotal = regtotal.rename(columns={0: 'Casos acumulados'
+                                        , 17:'Casos nuevos totales'
+                                        , 34:'Casos nuevos con sintomas'
+                                        , 51:'Casos nuevos sin sintomas'
+                                        , 68:'Casos nuevos sin notificar'
+                                        , 85:'Fallecidos totales'
+                                        , 102:'Casos confirmados recuperados'
+                                        , 119:'Casos activos confirmados'
+                                        , 136:'Casos activos probables'
+                                        , 153:'Casos probables acumulados'})
+    return regtotal
+
+
 
 #MATRICES COMUNAS
 
