@@ -3,8 +3,7 @@ import streamlit as st # programa para modelar los datos.
 import numpy as np
 import pandas as pd
 import SessionState #Libreria que permite paginacion
-
-
+from  sir import plt
 
 
 
@@ -79,6 +78,10 @@ if radio == "Region":
     print(ctRegion)
     st.write(pd.DataFrame.from_records(ctRegion,index=[0]))
 
+
+    "Sir"
+    st.pyplot(plt)
+    
 
 #MATRICES COMUNAS --------------------------------------------------------------------------------------------------------------
 elif radio == "Comuna":
