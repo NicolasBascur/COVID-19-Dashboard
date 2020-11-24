@@ -1,66 +1,62 @@
-import leer_data # Nuestra libreria de funciones. 
-import streamlit as st # programa para modelar los datos.
-import numpy as np
+import os
+import pprint
 import pandas as pd
 import SessionState #Libreria que permite paginacion
-from  sir import plt
+# from  sir import plt
+import datetime
+import streamlit as st
+import covsirphy as cs
+import SessionState
+import texto
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
+data_loader = cs.DataLoader("csv_listo")
+csvregion = pd.read_csv("csv_listo/covid19dh.csv")
+CHL = csvregion.loc[csvregion["ISO3"]=='CHL']
+CHL.to_csv('./csv_listo/region.csv') 
+
+jhu_data = data_loader.jhu(verbose=True)
+# Population in each country
+population_data = data_loader.population(verbose=True)
+# Government Response Tracker (OxCGRT)
+oxcgrt_data = data_loader.oxcgrt(verbose=True)
+
+
 
 
 
 #Paginacion Sidebar
 st.sidebar.title("Paginas")
+st.title("Covid19 Dashboard Chile - 2020")
+st.markdown("## Modelo Epidemiológico SIR")
+st.sidebar.markdown(texto.PARAMETER_SELECTION)
 radio = st.sidebar.radio(label="", options=["Region", "Comuna"])
 session_state = SessionState.get(a=0, b=0) 
-st.title("Covid19 Dashboard Chile - 2020")
-
-
-
+st.markdown(texto.MODEL_INTRO)
 #MATRICES REGIONES --------------------------------------------------------------------------------------------------------------
 if radio == "Region":
 
-    ####Archivos
-    ####
-    ctcRegion = "./datos/regiones/CasosTotalesCumulativo_T.csv"
-    mtcRegion = "./datos/regiones/FallecidosCumulativo_T.csv"
-    #caso sintoma Region
-    csRegion = "./datos/regiones/CasosNuevosConSintomas_T.csv"
-    ctRegion = "./datos/regiones/2020-10-25-CasosConfirmados-totalRegional.csv"
-    ###
-    #
+    table_reg = pd.read_csv("./csv_listo/region.csv")
+    table_reg= table_reg.rename(columns={'ObservationDate': 'Fecha', 'Confirmed':'Confirmados', 'Recovered':'Recuperados', 'Deaths':'Muertes','Population':'Poblacion','Province/State':'Region'})
+    st.markdown("Datos ")
+    #Valor de region, nombre
+    valor_reg=st.sidebar.selectbox('Seleccione region:',
+                        ("Arica y Parinacota","Tarapacá","Antofagasta","Atacama","Coquimbo","Valparaíso","Metropolitana","O’Higgins","Maule","Ñuble","Biobío","Araucanía","Los Ríos","Los Lagos","Aysén","Magallanes")
+                        )
+    #Valor de fecha inicial
     
-    st.write("Aqui vamos a ver el progreso diario del covid19 de cada region")
+    valor_fechai = st.sidebar.date_input("Fecha Inicial", datetime.date(2020, 11, 6))
+    tabla_muestra= table_reg.loc[(table_reg['Region'] == valor_reg)]
+    jhu_data.subset("Chile", province=valor_reg).tail()
+    total_df = jhu_data.total()
+    total_df.tail()
 
-    opcionRegion = st.selectbox("Seleccionar region",leer_data.regiones)
-    st.write("Seleccionaste", opcionRegion)
 
-    cRegion = leer_data.datosRegionCumulativo(ctcRegion,opcionRegion)
-    mRegion = leer_data.datosRegionCumulativo(mtcRegion,opcionRegion) 
-    sRegion = leer_data.datosRegionCumulativo(csRegion,opcionRegion)
-    ctRegion = leer_data.datosRegionTotales(ctRegion,opcionRegion)
 
-    st.write("horizontal")
-    st.write(pd.DataFrame({
-        'Fecha':cRegion[0],
-        'Casos':cRegion[1]
-    }))
+    st.write('Datos de la region '+ valor_reg +'', tabla_muestra[['Fecha', 'Poblacion','Confirmados','Recuperados','Muertes']], 'Above is a dataframe.')
+    st.pyplot(cs.line_plot(total_df[["Infected", "Fatal", "Recovered"]], "Total number of cases over time"))
 
-    st.write("vertical")
-    st.write(pd.DataFrame(
-        [cRegion[1]],
-        columns=cRegion[0]
-    ))
-    "Grafica"
-
-    grafica= pd.DataFrame(cRegion[1],cRegion[0])
-    st.line_chart(grafica)
-
-    st.write("Muertos Covid")
-
-    st.write("horizontal")
-    st.write(pd.DataFrame({
-        'Fecha':mRegion[0],
-        'Casos':mRegion[1]
-    }))
 
     st.write("vertical")
     st.write(pd.DataFrame(
@@ -85,13 +81,4 @@ if radio == "Region":
 
 #MATRICES COMUNAS --------------------------------------------------------------------------------------------------------------
 elif radio == "Comuna":
-
-    ctcComuna = "./datos/comunas/Covid-19.csv"
-    st.write("Aqui vamos a ver el progreso diario del covid19 de cada comuna")
-    opcionComuna = st.selectbox("Seleccionar Comuna",leer_data.comunas)
-    st.write("Comuna seleccionada: ", opcionComuna)
-    cComuna = leer_data.datosComunaCumulativo(ctcComuna ,opcionComuna)
-    st.write("#Histograma casos contagios acumulativos")
-    st.dataframe(cComuna)
-    st.bar_chart(cComuna)
-
+    st.markdown("Comunas")

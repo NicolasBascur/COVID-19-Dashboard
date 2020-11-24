@@ -2,6 +2,8 @@
 
 import csv
 import pandas as pd
+import itertools
+from pathlib import Path
 #Lista con todas las regiones
 regiones = ["Arica y Parinacota","Tarapacá","Antofagasta","Atacama","Coquimbo","Valparaíso","Metropolitana","O’Higgins","Maule","Ñuble","Biobío","Araucanía","Los Ríos","Los Lagos","Aysén","Magallanes"]
 #Lista de comunas
@@ -58,12 +60,6 @@ def leerRegionDiario():
 def leerOtrosDatosRegion():
     return
 
-
-
-
-
-
-
 #MATRICES COMUNAS
 
 def datosComunaCumulativo(archivo,comuna): #directorio archivo , Nombre de comuna a buscar
@@ -71,3 +67,5 @@ def datosComunaCumulativo(archivo,comuna): #directorio archivo , Nombre de comun
     data = data.loc[data['Comuna'] == comuna]
     data = (data[data.columns[5:-1]]).T
     return data
+
+
